@@ -721,7 +721,7 @@ impl WebSocketContext {
             WebSocketState::Active => {
                 self.state = WebSocketState::ClosedByPeer;
 
-                let close = close.map(|frame| {
+                let reply = close.clone().map(|frame| {
                     if !frame.code.is_allowed() {
                         CloseFrame {
                             code: CloseCode::Protocol,
@@ -732,7 +732,7 @@ impl WebSocketContext {
                     }
                 });
 
-                let reply = Frame::close(close.clone());
+                let reply = Frame::close(reply);
                 debug!("Replying to close with {reply:?}");
                 self.set_additional(reply);
 
